@@ -3,6 +3,10 @@ package main
 import "fmt"
 import "net"
 import "time"
+import "flag"
+
+var ipsFile = flag.String("filename", 1234, "help message for flagname")
+
 
 const TIMEOUT = 5 * time.Second
 type TCPCheckResult struct {
@@ -32,7 +36,7 @@ const IP_RANGE_MASK = net.CIDRMask(IP_RANGE_BITS, 32)
 
 func ParseIpAndIpRange(ipString) IP, IP {
 
-	ipv4Addr := net.ParseIP("192.0.2.1")
+	ipv4Addr := net.ParseIP(ipString)
         return ipv4Addr, ipv4Addr.Mask(IP_RANGE_MASK)
 }
 
@@ -43,8 +47,10 @@ type TCPReport struct {
 	IpRangesPartiallyReachable int /*More then 50 ips in range are not*/
 	TotalRunningTime int /* Including report generation */
 }
+
 func main() {
 	//TCPAddr{IP: ip.IP, Port: portnum}
+	fmt.Println(ipsFile)
 	ips := []string{"127.0.0.1:449"}
         results := make(chan TCPCheckResult)
 	for _, ip := range ips {
