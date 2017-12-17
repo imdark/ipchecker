@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"time"
 	"strconv"
+	"encoding/gob"
 )
 
 
@@ -30,7 +31,6 @@ func DialTCP(tcp string, targetIpMask string, results chan<- TCPCheckResult) {
 	} else {
 		results <- TCPCheckResult{targetIpMask, tcp, false}
 	}
-
 }
 
 type IpCheckTarget struct {
@@ -57,6 +57,7 @@ func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 	inputLineByLineScanner := bufio.NewScanner(inputFile)
 	// this is an optimization, the list of ips file might be too big so
 	// we start reading a row and pinging one ip at a time 
+
 	for inputLineByLineScanner.Scan() {
 		line := inputLineByLineScanner.Text()
 		// TODO: this should probably moved outside and processed in a seprate pipe
@@ -69,8 +70,6 @@ func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 }
 
 const IP_RANGE_BITS = 24
-
-
 
 // 32 is the number of bits in ip v4
 
@@ -102,7 +101,24 @@ type IpRangeFrequncy struct {
 
 const IP_RANGE_THRUSHSHOLD = 50
 func main() {
+	fmt.Println("")
+	//TODO: move port to configuration
+	listener, err := net.Listen("tcp", ":8081")
+	if err != nil {
+		fmt.Println("Error opening http server on port ", "8081", err)
+		return
+	}
+	for {
+		connection, err := listener.Accept()
+		if err != nil {
+			fmt.Println("Error accepting", err)
+		}
 
+		go GenerateReport(connection)
+	}
+}
+
+func GenerateReport(conn net.Conn) {
 	startTime := time.Now()
         ipCheckTargets := make(chan IpCheckTarget)
 
@@ -150,9 +166,12 @@ func main() {
 
 	endTime := time.Now()
 
-	fmt.Printf("%+v", TCPReport{TotalIps: ips_len,
+	encoder := gob.NewEncoder(conn)
+	tcpReport := &TCPReport{TotalIps: ips_len,
 			      TotalIpsNotReachable: totalIpsNotReachable,
 			      IpRangesNotReachable: ipRangesNotReachable,
 			      IpRangesPartiallyReachable: ipRangesPartiallyReachable,
-			      TotalRunningTime: endTime.Sub(startTime)})
+			      TotalRunningTime: endTime.Sub(startTime)}
+	encoder.Encode(tcpReport)
+	conn.Close()
 }
