@@ -19,7 +19,6 @@ func HealthCheckConfiguredIps(conn net.Conn) {
 	tcpReport := libs.GenerateReport(ipsFile)
 	encoder.Encode(tcpReport)
 	conn.Close()
-	fmt.Printf("blabla aaa %+v", tcpReport)
 }
 
 func main() {
@@ -31,7 +30,6 @@ func main() {
 	}
 	for {
 		connection, err := listener.Accept()
-		fmt.Println("asdadasdasd")
 		if err != nil {
 			fmt.Println("Error accepting", err)
 			return
@@ -40,4 +38,3 @@ func main() {
 		go HealthCheckConfiguredIps(connection)
 	}
 }
-

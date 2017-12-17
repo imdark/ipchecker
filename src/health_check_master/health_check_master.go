@@ -54,25 +54,13 @@ func Max(x, y time.Duration) time.Duration {
 	}
 }
 
-func ReadAgentsUrls() []string {
-	ips_num_string := os.Getenv("agent_ips_num")
-	if ips_num_string == "" {
-		ips_num_string = "0"
-	}
-
-	ips_num, _ := strconv.Atoi(ips_num_string)
-
-	agentUrls := make([]string, ips_num)
-	for i := 0; i < ips_num; i++ {
-		agentUrls[i] = os.Getenv("agent_ip" + strconv.Itoa(i + 1))
-	}
-
-	return agentUrls
-
-}
 
 func main() {
 	agentUrls := ReadAgentsUrls()
+	if len(agentUrls) == 0 {
+		fmt.Println("No agent was configured")
+		return
+	}
 
 	reports := make(chan HealthCheckAgentResult)
 
@@ -94,7 +82,6 @@ func main() {
 
 	for i := 0; i < agentUrlsLen; i++ {
 		result := <-reports
-		fmt.Printf("%+v", result.TcpReport)
 		if result.Err != nil {
 			fmt.Println("Error during connecting to client ", result.Err)
 			continue
