@@ -94,7 +94,7 @@ func main() {
 
 	for i := 0; i < agentUrlsLen; i++ {
 		result := <-reports
-		fmt.Printf("%+v", result)
+		fmt.Printf("%+v", result.TcpReport)
 		if result.Err != nil {
 			fmt.Println("Error during connecting to client ", result.Err)
 			continue

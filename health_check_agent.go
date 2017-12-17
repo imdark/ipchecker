@@ -110,8 +110,6 @@ func GetConfiguredPort() string {
 }
 
 func main() {
-	fmt.Println("")
-	//TODO: move port to configuration
 	configuredPort := GetConfiguredPort()
 	listener, err := net.Listen("tcp", ":" + configuredPort)
 	if err != nil {
@@ -119,9 +117,13 @@ func main() {
 		return
 	}
 	for {
+		fmt.Println("asdadasdasd")
 		connection, err := listener.Accept()
+		time.Sleep(30 * time.Second)
+		fmt.Println("asdadasdasd")
 		if err != nil {
 			fmt.Println("Error accepting", err)
+			return
 		}
 
 		go GenerateReport(connection)
@@ -185,6 +187,7 @@ func GenerateReport(conn net.Conn) {
 			      IpRangesNotReachable: ipRangesNotReachable,
 			      IpRangesPartiallyReachable: ipRangesPartiallyReachable,
 			      TotalRunningTime: endTime.Sub(startTime)}
+	fmt.Printf("blabla aaa %+v", tcpReport)
 	encoder.Encode(tcpReport)
 	conn.Close()
 }
