@@ -100,12 +100,22 @@ type IpRangeFrequncy struct {
 }
 
 const IP_RANGE_THRUSHSHOLD = 50
+func GetConfiguredPort() string {
+	configuredPort := os.Getenv("TCP_PORT")
+	if configuredPort != "" {
+		return configuredPort
+	} else {
+		return "8081"
+	}
+}
+
 func main() {
 	fmt.Println("")
 	//TODO: move port to configuration
-	listener, err := net.Listen("tcp", ":8081")
+	configuredPort := GetConfiguredPort()
+	listener, err := net.Listen("tcp", ":" + configuredPort)
 	if err != nil {
-		fmt.Println("Error opening http server on port ", "8081", err)
+		fmt.Println("Error opening http server on port ", configuredPort, err)
 		return
 	}
 	for {
@@ -136,12 +146,15 @@ func GenerateReport(conn net.Conn) {
 	}
 	ipRangeFrequencyMap := make(map[string]*IpRangeFrequncy)
 	totalIpsNotReachable := 0
+
 	for i := 0; i < ips_len; i++ {
 		health_check_result := <-results
+
 
 		ipRangeFrequncy, ok := ipRangeFrequencyMap[health_check_result.targetIpMask]
 		if !ok {
 			ipRangeFrequncy = &IpRangeFrequncy{}
+
 
 			ipRangeFrequencyMap[health_check_result.targetIpMask] = ipRangeFrequncy
 		}

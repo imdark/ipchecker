@@ -5,6 +5,8 @@ import (
 	"net"
 	"encoding/gob"
 	"time"
+	"os"
+	"strconv"
 )
 
 func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
@@ -52,8 +54,26 @@ func Max(x, y time.Duration) time.Duration {
 	}
 }
 
+func ReadAgentsUrls() []string {
+	ips_num_string := os.Getenv("agent_ips_num")
+	if ips_num_string == "" {
+		ips_num_string = "0"
+	}
+
+	ips_num, _ := strconv.Atoi(ips_num_string)
+
+	agentUrls := make([]string, ips_num)
+	for i := 0; i < ips_num; i++ {
+		agentUrls[i] = os.Getenv("agent_ip" + strconv.Itoa(i + 1))
+	}
+
+	return agentUrls
+
+}
+
 func main() {
-	agentUrls := [1]string{"localhost:8082"}
+	agentUrls := ReadAgentsUrls()
+
 	reports := make(chan HealthCheckAgentResult)
 
 	agentUrlsLen := 0
