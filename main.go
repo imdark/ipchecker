@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"net"
-	"time"
 	"flag"
 	"os"
 	"bufio"
+	"time"
+	"strconv"
 )
 
 
@@ -17,23 +18,24 @@ func init() {
 
 const TIMEOUT = 5 * time.Second
 type TCPCheckResult struct {
+	targetIpMask string
 	ip string
 	is_up bool
 }
 
-func DialTCP(tcp string, results chan<- TCPCheckResult) {
-	_, error := net.DialTimeout("tcp", tcp, TIMEOUT)
-	if error != nil {
-		results <- TCPCheckResult{tcp, true}
+func DialTCP(tcp string, targetIpMask string, results chan<- TCPCheckResult) {
+	_, err := net.DialTimeout("tcp", tcp, TIMEOUT)
+	if err == nil {
+		results <- TCPCheckResult{targetIpMask, tcp, true}
 	} else {
-		results <- TCPCheckResult{tcp, false}
+		results <- TCPCheckResult{targetIpMask, tcp, false}
 	}
 
 }
 
 type IpCheckTarget struct {
 	targetTcpAddress net.TCPAddr
-	targetIpMask net.IP
+	targetIpMask string
 }
 
 // code assumes input is a stored in a file the program has permission to read
@@ -57,7 +59,7 @@ func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 	// we start reading a row and pinging one ip at a time 
 	for inputLineByLineScanner.Scan() {
 		line := inputLineByLineScanner.Text()
-		// TODO: this should probably moved outside and processed in a diferent pipe
+		// TODO: this should probably moved outside and processed in a seprate pipe
 		targetIp, ipRange := ParseIpAndIpRange(line)
 		targetTCP := GetConfiguredTcpAddressForIp(targetIp)
 		lines <- IpCheckTarget{targetTCP, ipRange}
@@ -72,14 +74,15 @@ const IP_RANGE_BITS = 24
 
 // 32 is the number of bits in ip v4
 
-func ParseIpAndIpRange(ipString string) (net.IP, net.IP) {
+func ParseIpAndIpRange(ipString string) (net.IP, string) {
 
 	IP_RANGE_MASK := net.CIDRMask(IP_RANGE_BITS, 32)
 	ipv4Addr := net.ParseIP(ipString)
-        return ipv4Addr, ipv4Addr.Mask(IP_RANGE_MASK)
+
+        return ipv4Addr, ipv4Addr.Mask(IP_RANGE_MASK).String()
 }
 
-const STANDART_IP_CHECKER_PORT = 449
+const STANDART_IP_CHECKER_PORT = 80
 func GetConfiguredTcpAddressForIp(ip net.IP) net.TCPAddr {
 	return net.TCPAddr{IP: ip, Port: STANDART_IP_CHECKER_PORT }
 }
@@ -87,14 +90,20 @@ func GetConfiguredTcpAddressForIp(ip net.IP) net.TCPAddr {
 type TCPReport struct {
 	TotalIps int
 	TotalIpsNotReachable int
-	IpRangesNotReachable int /*ranges are under /24 subnet masks */
+	IpRangesNotReachable int /*ip ranges are under /24 subnet mask */
 	IpRangesPartiallyReachable int /*More then 50 ips in range are not*/
-	TotalRunningTime int /* Including report generation */
+	TotalRunningTime time.Duration /* Including report generation */
 }
 
-func main() {
-	fmt.Println(ipsFile)
+type IpRangeFrequncy struct {
+	IpsNotReachable int
+	IpsInRange int
+}
 
+const IP_RANGE_THRUSHSHOLD = 50
+func main() {
+
+	startTime := time.Now()
         ipCheckTargets := make(chan IpCheckTarget)
 
 	go ReadInputFile(ipsFile, ipCheckTargets)
@@ -102,16 +111,48 @@ func main() {
 		fmt.Println("Error reading input file", err)
 	}*/
 
-	//ips := []string{"127.0.0.1:449"}
         results := make(chan TCPCheckResult)
 	ips_len := 0
 
 	for ipCheckTarget := range ipCheckTargets {
                 ips_len++
-		go DialTCP(string(ipCheckTarget.targetTcpAddress.IP) + ":" + string(ipCheckTarget.targetTcpAddress.Port), results)
+		go DialTCP(ipCheckTarget.targetTcpAddress.IP.String() + ":" + strconv.Itoa(ipCheckTarget.targetTcpAddress.Port), ipCheckTarget.targetIpMask, results)
 	}
+	ipRangeFrequencyMap := make(map[string]*IpRangeFrequncy)
+	totalIpsNotReachable := 0
 	for i := 0; i < ips_len; i++ {
-		fmt.Println(<-results)
+		health_check_result := <-results
+
+		ipRangeFrequncy, ok := ipRangeFrequencyMap[health_check_result.targetIpMask]
+		if !ok {
+			ipRangeFrequncy = &IpRangeFrequncy{}
+
+			ipRangeFrequencyMap[health_check_result.targetIpMask] = ipRangeFrequncy
+		}
+		ipRangeFrequncy.IpsInRange++
+
+		if !health_check_result.is_up {
+			totalIpsNotReachable++
+			ipRangeFrequncy.IpsNotReachable++
+		}
 	}
-	fmt.Println("done")
+
+	ipRangesNotReachable := 0
+	ipRangesPartiallyReachable := 0
+	for ipRange := range ipRangeFrequencyMap {
+		item := ipRangeFrequencyMap[ipRange]
+		if item.IpsNotReachable == item.IpsInRange {
+			ipRangesNotReachable++
+		} else if item.IpsNotReachable > IP_RANGE_THRUSHSHOLD {
+			ipRangesPartiallyReachable++
+		}
+	}
+
+	endTime := time.Now()
+
+	fmt.Printf("%+v", TCPReport{TotalIps: ips_len,
+			      TotalIpsNotReachable: totalIpsNotReachable,
+			      IpRangesNotReachable: ipRangesNotReachable,
+			      IpRangesPartiallyReachable: ipRangesPartiallyReachable,
+			      TotalRunningTime: endTime.Sub(startTime)})
 }
