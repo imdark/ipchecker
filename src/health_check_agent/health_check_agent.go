@@ -12,12 +12,12 @@ import (
 var ipsFile string
 func init() {
 	flag.StringVar(&ipsFile, "filename", "./sample_ips.csv", "file containing list of ips to scan")
+	flag.Parse()
 }
 
 func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
 	tcpReport := libs.GenerateReport(ipsFile)
-	fmt.Println("request recived", tcpReport, ipsFile)
 	encoder.Encode(tcpReport)
 	conn.Close()
 }
