@@ -6,8 +6,8 @@ import (
 	"net"
 	"encoding/gob"
 	"time"
-	"os"
-	"io"
+	//"os"
+	//"io"
 )
 
 func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
