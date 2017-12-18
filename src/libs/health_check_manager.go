@@ -44,6 +44,7 @@ func GenerateReport(ipsFile string) *TCPReport {
 		targetIp := ipCheckTarget.TargetTcpAddress.IP.String()
 		targetPort := strconv.Itoa(ipCheckTarget.TargetTcpAddress.Port)
 		targetAddress := targetIp  + ":" + targetPort
+		fmt.Println("go DialTCP(targetAddress, ipCheckTarget.TargetIpMask, results")
 		go DialTCP(targetAddress, ipCheckTarget.TargetIpMask, results)
 	}
 
