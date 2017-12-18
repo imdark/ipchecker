@@ -33,7 +33,6 @@ func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 
 	for inputLineByLineScanner.Scan() {
 		line := inputLineByLineScanner.Text()
-		fmt.Println("asdsad", line)
 		targetIp, ipRange := ParseIpAndIpRange(line)
 		targetTCP := GetConfiguredTcpAddressForIp(targetIp)
 		lines <- IpCheckTarget{targetTCP, ipRange}

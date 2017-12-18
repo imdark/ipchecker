@@ -17,6 +17,7 @@ func init() {
 func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
 	tcpReport := libs.GenerateReport(ipsFile)
+	fmt.Println(tcpReport)
 	encoder.Encode(tcpReport)
 	conn.Close()
 }
