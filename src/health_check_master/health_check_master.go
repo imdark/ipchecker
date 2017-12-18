@@ -22,8 +22,7 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 	decoder.Decode(agentReport)
 	conn.Close()
 	fmt.Println("agentReport", agentReport)
-	reports<-agentReport
-	//reports<-HealthCheckAgentResult{nil, nil}
+	reports<-HealthCheckAgentResult{agentReport, nil}
 
 }
 
