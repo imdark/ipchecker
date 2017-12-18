@@ -1,7 +1,7 @@
 package main
 
 import (
-	"libs"
+	"github.com/imdark/ipchecker/src/libs"
 	"fmt"
 	"net"
 	"flag"
