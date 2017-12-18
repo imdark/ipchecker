@@ -42,7 +42,9 @@ if no parameters are specified the code will try to run on ./sample_ips.csv
 
 To Test:
 --------
-```go test```
+```
+go test github.com/imdark/ipchecker/src/
+```
 
 Next steps:
 -----------
