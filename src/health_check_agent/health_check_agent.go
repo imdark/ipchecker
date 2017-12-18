@@ -17,6 +17,7 @@ func init() {
 func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
 	tcpReport := libs.GenerateReport(ipsFile)
+	fmt.Println("request recived", tcpReport)
 	encoder.Encode(tcpReport)
 	conn.Close()
 }
@@ -30,7 +31,6 @@ func main() {
 	}
 	for {
 		connection, err := listener.Accept()
-		fmt.Println("request recived")
 		if err != nil {
 			fmt.Println("Error accepting", err)
 			return
