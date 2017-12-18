@@ -18,7 +18,8 @@ func init() {
 func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
 	fmt.Println("before tcpReport")
-	tcpReport := libs.GenerateReport(ipsFile)
+	//tcpReport := libs.GenerateReport(ipsFile)
+	tcpReport := libs.TcpReport{}
 	fmt.Println("after tcpReport")
 	fmt.Println(tcpReport)
 	encoder.Encode(tcpReport)
@@ -41,6 +42,6 @@ func main() {
 		}
 
 		time.Sleep(time.Second * 50)
-		//go HealthCheckConfiguredIps(connection)
+		HealthCheckConfiguredIps(connection)
 	}
 }
