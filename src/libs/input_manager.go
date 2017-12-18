@@ -56,3 +56,4 @@ const STANDART_IP_CHECKER_PORT = 80
 func GetConfiguredTcpAddressForIp(ip net.IP) net.TCPAddr {
 	return net.TCPAddr{IP: ip, Port: STANDART_IP_CHECKER_PORT }
 }
+
