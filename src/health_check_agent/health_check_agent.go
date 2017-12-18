@@ -12,7 +12,6 @@ import (
 var ipsFile string
 func init() {
 	flag.StringVar(&ipsFile, "filename", "./sample_ips.csv", "file containing list of ips to scan")
-	flag.Parse()
 }
 
 func HealthCheckConfiguredIps(conn net.Conn) {
@@ -23,6 +22,7 @@ func HealthCheckConfiguredIps(conn net.Conn) {
 }
 
 func main() {
+	flag.Parse()
 	configuredPort := libs.GetConfiguredPort()
 	listener, err := net.Listen("tcp", ":" + configuredPort)
 	if err != nil {
