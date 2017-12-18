@@ -34,6 +34,7 @@ func GenerateReport(ipsFile string) *TCPReport {
 
 	fmt.Println("go ReadInputFile(ipsFile, ipCheckTargets)")
 	go ReadInputFile(ipsFile, ipCheckTargets)
+	fmt.Println("after ReadInputFile(ipsFile, ipCheckTargets)")
 
         results := make(chan TCPCheckResult)
 	ipsCount := 0
