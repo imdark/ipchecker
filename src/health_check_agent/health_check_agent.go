@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"github.com/imdark/ipchecker/src/libs"
 	"fmt"
 	"net"
