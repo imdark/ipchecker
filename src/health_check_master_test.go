@@ -2,16 +2,8 @@ package main
 
 import (
 	"testing"
-	"libs"
+	"github.com/imdark/ipchecker/src/libs"
 )
-
-func TestAgentExistingIps(t *testing.T) {
-	libs.GenerateReport("sample_ips.csv")
-}
-
-func TestAgentMixedIps(t *testing.T) {
-	libs.GenerateReport("mixed_ips.csv")
-}
 
 func TestSummeryCombination(t *testing.T) {
 

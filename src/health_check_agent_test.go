@@ -2,7 +2,7 @@ package main
 
 import (
 	"testing"
-	"libs"
+	"github.com/imdark/ipchecker/src/libs"
 )
 
 func TestAgentExistingIps(t *testing.T) {
