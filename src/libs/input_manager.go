@@ -4,6 +4,7 @@ import (
 	"os"
 	"bufio"
 	"net"
+	"fmt"
 )
 type IpCheckTarget struct {
 	TargetTcpAddress net.TCPAddr
@@ -15,9 +16,10 @@ type IpCheckTarget struct {
 func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 
 	defer close(lines)
+        fmt.Println(filePath)
 	inputFile, err := os.Open(filePath)
 	if err != nil {
-
+		fmt.Println(err)
 		return err
 	}
 
