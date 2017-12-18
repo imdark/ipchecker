@@ -17,12 +17,13 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 		return
 	}
 	io.Copy(os.Stdout, conn)
-	/*encoder := gob.NewEncoder(conn)
+	decoder := gob.NewDecoder(conn)
 	agentReport := &libs.TCPReport{}
-	encoder.Encode(agentReport)
+	decoder.Decode(agentReport)
 	conn.Close()
 	fmt.Println("agentReport", agentReport)
-	*/reports<-HealthCheckAgentResult{nil, nil}
+	reports<-agentReport
+	//reports<-HealthCheckAgentResult{nil, nil}
 
 }
 
