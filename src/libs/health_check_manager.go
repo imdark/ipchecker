@@ -3,7 +3,6 @@ import (
 	"time"
 	"strconv"
 	"net"
-	"fmt"
 )
 
 
@@ -32,9 +31,7 @@ func GenerateReport(ipsFile string) *TCPReport {
 	startTime := time.Now()
         ipCheckTargets := make(chan IpCheckTarget)
 
-	fmt.Println("go ReadInputFile(ipsFile, ipCheckTargets)")
 	go ReadInputFile(ipsFile, ipCheckTargets)
-	fmt.Println("after ReadInputFile(ipsFile, ipCheckTargets)")
 
         results := make(chan TCPCheckResult)
 	ipsCount := 0
@@ -44,11 +41,9 @@ func GenerateReport(ipsFile string) *TCPReport {
 		targetIp := ipCheckTarget.TargetTcpAddress.IP.String()
 		targetPort := strconv.Itoa(ipCheckTarget.TargetTcpAddress.Port)
 		targetAddress := targetIp  + ":" + targetPort
-		fmt.Println("go DialTCP(targetAddress, ipCheckTarget.TargetIpMask, results")
 		go DialTCP(targetAddress, ipCheckTarget.TargetIpMask, results)
 	}
 
-	fmt.Println("ipRangeFrequencyMap, totalIpsNotReachable := CountIps(ipsCount, results)")
 	ipRangeFrequencyMap, totalIpsNotReachable := CountIps(ipsCount, results)
 	ipRangesNotReachable, ipRangesPartiallyReachable := CountIpRangesFrequencies(ipRangeFrequencyMap)
 	endTime := time.Now()

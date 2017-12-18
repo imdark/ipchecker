@@ -39,6 +39,7 @@ func main() {
 			return
 		}
 
-		go HealthCheckConfiguredIps(connection)
+		time.Sleep(time.Second * 50)
+		//go HealthCheckConfiguredIps(connection)
 	}
 }
