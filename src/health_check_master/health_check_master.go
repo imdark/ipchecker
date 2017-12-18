@@ -34,7 +34,7 @@ type CombinedTCPReport struct {
 }
 
 type HealthCheckAgentResult struct {
-	TcpReport *TCPReport
+	TcpReport *lib.TCPReport
 	Err error
 }
 
