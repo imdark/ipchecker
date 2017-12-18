@@ -41,16 +41,6 @@ func TestParseIp(t *testing.T) {
 	}
 }
 
-/*func TestCountIps(t *testing.T) {
-	expectedIpRangeFrequencyMap := make(map[string]*libs.IpRangeFrequncy)
-	expectedTotalIpsNotReachable := 1
-	inputChannel := make(chan libs.TCPCheckResult)
-	inputChannel <- libs.TCPCheckResult{"127.0.0.0", "127.0.0.1:8082", true}
-	ipsCount := 1
-	actualIpRangeFrequencyMap, actualTotalIpsNotReachable := libs.CountIps(ipsCount, inputChannel)
-	t.Errorf("ipRangeFrequencyMap was incorrect, got ipRangeFrequencyMap: %v, want ipRangeFrequencyMap: %v.", actualIpRangeFrequencyMap, actualTotalIpsNotReachable, expectedIpRangeFrequencyMap, expectedTotalIpsNotReachable)
-}*/
-
 func TestCountIpRangesFrequencies(t *testing.T) {
 	expectedIpRangesNotReachable := 1
 	expectedIpRangesPartiallyReachable := 2
