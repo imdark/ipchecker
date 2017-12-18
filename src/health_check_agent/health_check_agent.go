@@ -17,11 +17,7 @@ func init() {
 
 func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
-	fmt.Println("before tcpReport")
-	//tcpReport := libs.GenerateReport(ipsFile)
-	tcpReport := libs.TCPReport{1,2,3,4, time.Second}
-	fmt.Println("after tcpReport")
-	fmt.Println("tcpReport", tcpReport)
+	tcpReport := libs.GenerateReport(ipsFile)
 	encoder.Encode(tcpReport)
 	conn.Close()
 }
@@ -40,8 +36,6 @@ func main() {
 			fmt.Println("Error accepting", err)
 			return
 		}
-
-		//time.Sleep(time.Second * 50)
 		HealthCheckConfiguredIps(connection)
 	}
 }

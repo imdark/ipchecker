@@ -21,7 +21,6 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 	agentReport := &libs.TCPReport{}
 	decoder.Decode(agentReport)
 	conn.Close()
-	fmt.Println("agentReport", agentReport)
 	reports<-HealthCheckAgentResult{agentReport, nil}
 
 }
