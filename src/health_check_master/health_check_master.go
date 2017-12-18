@@ -15,7 +15,7 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 		return
 	}
 	encoder := gob.NewEncoder(conn)
-	agentReport := &TCPReport{}
+	agentReport := &libs.TCPReport{}
 	encoder.Encode(agentReport)
 	conn.Close()
 
@@ -37,13 +37,6 @@ type HealthCheckAgentResult struct {
 	TcpReport *TCPReport
 	Err error
 }
-type TCPReport struct {
-	TotalIps int
-	TotalIpsNotReachable int
-	IpRangesNotReachable int /*ip ranges are under /24 subnet mask */
-	IpRangesPartiallyReachable int /*More then 50 ips in range are not*/
-	TotalRunningTime time.Duration /* Including report generation */
-}
 
 func Max(x, y time.Duration) time.Duration {
 	if x > y {
@@ -55,7 +48,7 @@ func Max(x, y time.Duration) time.Duration {
 
 
 func main() {
-	agentUrls := ReadAgentsUrls()
+	agentUrls := libs.ReadAgentsUrls()
 	if len(agentUrls) == 0 {
 		fmt.Println("No agent was configured")
 		return
