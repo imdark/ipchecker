@@ -12,7 +12,7 @@ Run child agent
 go get github.com/imdark/ipchecker/src/health_check_agent
 
 export TCP_PORT=8082
-$GOPATH/bin/health_check_agent $GOPATH/src/github.com/imdark/ipchecker/src/sample_ips.csv
+$GOPATH/bin/health_check_agent -filename $GOPATH/src/github.com/imdark/ipchecker/src/sample_ips.csv
 
 ```
 
@@ -21,7 +21,7 @@ Run another agent
 go get github.com/imdark/ipchecker/src/health_check_agent
 
 export TCP_PORT=8083
-$GOPATH/bin/health_check_agent $GOPATH/src/github.com/imdark/ipchecker/src/mixed_ips.csv
+$GOPATH/bin/health_check_agent -filename $GOPATH/src/github.com/imdark/ipchecker/src/mixed_ips.csv
 
 ```
 

@@ -16,7 +16,6 @@ type IpCheckTarget struct {
 func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 
 	defer close(lines)
-        fmt.Println(filePath)
 	inputFile, err := os.Open(filePath)
 	if err != nil {
 		fmt.Println(err)
@@ -34,7 +33,7 @@ func ReadInputFile(filePath string, lines chan<- IpCheckTarget) (err error) {
 
 	for inputLineByLineScanner.Scan() {
 		line := inputLineByLineScanner.Text()
-		// TODO: this should probably moved outside and processed in a seprate pipe
+		fmt.Println("asdsad", line)
 		targetIp, ipRange := ParseIpAndIpRange(line)
 		targetTCP := GetConfiguredTcpAddressForIp(targetIp)
 		lines <- IpCheckTarget{targetTCP, ipRange}
