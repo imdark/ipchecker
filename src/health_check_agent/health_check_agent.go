@@ -30,6 +30,7 @@ func main() {
 	}
 	for {
 		connection, err := listener.Accept()
+		fmt.Println("request recived")
 		if err != nil {
 			fmt.Println("Error accepting", err)
 			return
