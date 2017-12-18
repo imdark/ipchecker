@@ -18,7 +18,7 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 	agentReport := &libs.TCPReport{}
 	encoder.Encode(agentReport)
 	conn.Close()
-	fmt.Println(agentReport)
+	fmt.Println("agentReport", agentReport)
 	reports<-HealthCheckAgentResult{agentReport, nil}
 
 }
