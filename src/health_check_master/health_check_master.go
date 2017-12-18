@@ -16,7 +16,7 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 		reports<-HealthCheckAgentResult{nil, err}
 		return
 	}
-	io.Copy(os.Stdout, conn)
+	//io.Copy(os.Stdout, conn)
 	decoder := gob.NewDecoder(conn)
 	agentReport := &libs.TCPReport{}
 	decoder.Decode(agentReport)
