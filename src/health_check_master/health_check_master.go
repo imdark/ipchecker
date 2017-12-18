@@ -6,7 +6,6 @@ import (
 	"net"
 	"encoding/gob"
 	"time"
-	//"bufio"
 )
 
 func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
@@ -15,9 +14,6 @@ func GetAgentReport(url string, reports chan<-HealthCheckAgentResult) {
 		reports<-HealthCheckAgentResult{nil, err}
 		return
 	}
-
-	fmt.Println(conn, err)
-	//bufio.NewReader(conn)
 	encoder := gob.NewEncoder(conn)
 	agentReport := &libs.TCPReport{}
 	encoder.Encode(agentReport)
