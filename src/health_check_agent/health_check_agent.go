@@ -19,7 +19,7 @@ func HealthCheckConfiguredIps(conn net.Conn) {
 	encoder := gob.NewEncoder(conn)
 	fmt.Println("before tcpReport")
 	//tcpReport := libs.GenerateReport(ipsFile)
-	tcpReport := libs.TcpReport{}
+	tcpReport := libs.TCPReport{1,2,3,4, time.Second}
 	fmt.Println("after tcpReport")
 	fmt.Println(tcpReport)
 	encoder.Encode(tcpReport)
