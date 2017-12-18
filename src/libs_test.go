@@ -5,10 +5,10 @@ import (
 	"github.com/imdark/ipchecker/src/libs"
 	"net"
 	"bytes"
-//	"time"
+	"time"
 )
 
-/*func TestAgentExistingIps(t *testing.T) {
+func TestAgentExistingIps(t *testing.T) {
 	expectedReport := libs.TCPReport{50003, 45640, 1, 1, time.Minute}
 	actualReport := libs.GenerateReport("sample_ips.csv")
 
@@ -26,7 +26,7 @@ func TestAgentMixedIps(t *testing.T) {
 	   expectedReport.TotalRunningTime <= actualReport.TotalRunningTime {
 		t.Errorf("Generated report was incorrect, got: %v, want: %v.", actualReport, expectedReport)
 	}
-}*/
+}
 
 func TestParseIp(t *testing.T) {
 	expectedIp := net.IPv4(127, 0, 0, 1)
