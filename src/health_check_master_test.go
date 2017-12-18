@@ -2,7 +2,6 @@ package main
 
 import (
 	"testing"
-	"github.com/imdark/ipchecker/src/libs"
 )
 
 func TestSummeryCombination(t *testing.T) {
